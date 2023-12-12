@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTful API</title>
+    <script >
+        function performGetRequest() {
+            fetch('http://localhost:9090/get/employees', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const dataJSON = JSON.stringify(data, null, 2);
+                    for(let i = 0; i < data.length; i++){
+                        let table = document.getElementById("table");
+                        let row = table.insertRow(i+1);
+                        let cell1 = row.insertCell(0);
+                        let cell2 = row.insertCell(1);
+                        cell1["innerHTML"] = data[i].employeeId;
+                        cell2["innerHTML"] = data[i].employeeName;
+                    }
+
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function performPostRequest() {
+            fetch('http://localhost:9090/post/employee', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ employeeName: document.getElementById("postFormEmployeeName").value }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('postResult').innerText = data.employeeName + " added to the database";
+
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function performPutRequest() {
+            console.log(document.getElementById("putFormEmployeeId").value);
+            console.log(document.getElementById("putFormEmployeeName").value);
+            fetch('http://localhost:9090/put/employee', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ employeeId: document.getElementById("putFormEmployeeId").value, employeeName: document.getElementById("putFormEmployeeName").value }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('putResult').innerText = "Employee "+data.employeeId + " updated in the database";
+
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function performDeleteRequest() {
+            fetch('http://localhost:9090/delete/employee', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ employeeId: document.getElementById("deleteFormEmployeeId").value }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('deleteResult').innerText = "Employee "+document.getElementById("deleteFormEmployeeId").value + " deleted from the database";
+
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+
+    </script>
+</head>
+<body>
+<h1>RESTful API</h1>
+
+<div>
+    <h2>GET Method</h2>
+    <button onclick="performGetRequest()">Send GET Request</button>
+    <!--table with two columns: employeeId and employeeName-->
+    <table id="table">
+        <tr>
+            <th>employeeId</th>
+            <th>employeeName</th>
+        </tr>
+        <tr>
+            <td id="employeeId"></td>
+            <td id="employeeName"></td>
+        </tr>
+    </table>
+    <p id="getResult"></p>
+</div>
+
+<div>
+    <h2>POST Method</h2>
+    <button onclick="performPostRequest()">Send POST Request</button>
+    <input type="text" id="postFormEmployeeName" name="postFormEmployeeName" placeholder="Employee Name">
+
+    <p id="postResult"></p>
+</div>
+
+<div>
+    <h2>PUT Method</h2>
+    <button onclick="performPutRequest()">Send PUT Request</button>
+    <input type="text" id="putFormEmployeeId" name="putFormEmployeeId" placeholder="Employee Id">
+    <input type="text" id="putFormEmployeeName" name="putFormEmployeeName" placeholder="Employee Name">
+    <p id="putResult"></p>
+</div>
+
+<div>
+    <h2>DELETE Method</h2>
+    <button onclick="performDeleteRequest()">Send DELETE Request</button>
+    <input type="text" id="deleteFormEmployeeId" name="deleteFormEmployeeId" placeholder="Employee Id">
+    <p id="deleteResult"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
